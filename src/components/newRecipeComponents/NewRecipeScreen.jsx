@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Formik } from "formik";
+import classes from "./newRecipeComponents.module.css";
 
 const NewRecipeScreen = () => {
   const [ingredients, setIngredients] = useState([]);
   const [name, setName] = useState("");
   const [quantity, setQuantity] = useState("");
-  const [type, setType] = useState("")
+  const [type, setType] = useState("");
 
   const initialValues = {
     type: "",
@@ -18,92 +19,153 @@ const NewRecipeScreen = () => {
     instructions: "",
   };
 
-  const onSubmit = async(values) => {
+  const onSubmit = async (values) => {
     values.ingredients = ingredients;
-    values.type = type
-    const response = await fetch('https://recipes.devmountain.com/recipes',{
-      method: 'POST',
-        body: JSON.stringify(values),
-        headers: {
-          'Content-Type' : 'application/json'
-        }
-    })
-    const data = await response.json()
-    console.log(data)
-  }
+    values.type = type;
+    const response = await fetch("https://recipes.devmountain.com/recipes", {
+      method: "POST",
+      body: JSON.stringify(values),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    console.log(data);
+  };
 
   const addIngredient = () => {
     setIngredients([...ingredients, { name, quantity }]);
-
     setName("");
     setQuantity("");
   };
 
   const typeChangeHandler = (evt) => {
-    setType(evt.target.value)
-  }
+    setType(evt.target.value);
+  };
 
   return (
-    <section>
-      <h1>Tell us about your Recipe!</h1>
+    <section className={classes.section}>
+      <h1 className={classes.title}>Tell us about your Recipe!</h1>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         {({ values, handleChange, handleSubmit }) => (
-          <form action="" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="recipe name"
-              onChange={handleChange}
-              value={values.recipeName}
-              name="recipeName"
-            />
-            <input
-              type="text"
-              placeholder="image url"
-              onChange={handleChange}
-              value={values.imageURL}
-              name="imageURL"
-            />
-            <input
-              type="text"
-              placeholder="prep time"
-              onChange={handleChange}
-              value={values.prepTime}
-              name="prepTime"
-            />
-            <input
-              type="text"
-              placeholder="cook time"
-              onChange={handleChange}
-              value={values.cookTime}
-              name="cookTime"
-            />
-            <input
-              type="text"
-              placeholder="serves"
-              onChange={handleChange}
-              value={values.serves}
-              name="serves"
-            />
+          <form action="" onSubmit={handleSubmit} className={classes.form}>
+            <div className={classes.formDiv}>
+              <input
+                className={classes.input}
+                type="text"
+                placeholder="recipe name"
+                onChange={handleChange}
+                value={values.recipeName}
+                name="recipeName"
+              />
+              <input
+                className={classes.input}
+                type="text"
+                placeholder="image url"
+                onChange={handleChange}
+                value={values.imageURL}
+                name="imageURL"
+              />
+            </div>
+            <div className={classes.radioDiv}>
+              <input
+                className={classes.radio}
+                onChange={typeChangeHandler}
+                type="radio"
+                name="style"
+                value="cook"
+              />
+              <label className={classes.label} htmlFor="cook">
+                Cook
+              </label>
 
-            <input
-              type="text"
-              placeholder="Ingredient"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-            />
+              <input
+                className={classes.radio}
+                onChange={typeChangeHandler}
+                type="radio"
+                name="style"
+                value="bake"
+              />
+              <label className={classes.label} htmlFor="cook">
+                Bake
+              </label>
+
+              <input
+                className={classes.radio}
+                onChange={typeChangeHandler}
+                type="radio"
+                name="style"
+                value="drink"
+              />
+              <label className={classes.label} htmlFor="cook">
+                Drink
+              </label>
+            </div>
+            <div className={classes.formDiv}>
+              <input
+                className={classes.input}
+                type="text"
+                placeholder="prep time"
+                onChange={handleChange}
+                value={values.prepTime}
+                name="prepTime"
+              />
+              <input
+                className={classes.input}
+                type="text"
+                placeholder="cook time"
+                onChange={handleChange}
+                value={values.cookTime}
+                name="cookTime"
+              />
+              <input
+                className={classes.input}
+                type="text"
+                placeholder="serves"
+                onChange={handleChange}
+                value={values.serves}
+                name="serves"
+              />
+            </div>
+            <div className={classes.formDiv}>
+              <div className={classes.ingredients}>
+                <input
+                  className={classes.input}
+                  type="text"
+                  placeholder="Ingredient"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <input
+                  className={classes.input}
+                  type="text"
+                  placeholder="Quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                />
+              </div>
+              <div className={classes.ingredients}>
+                <ul className={classes.ingredientslist}>
+                  {ingredients.map((ingredient) => {
+                    return (
+                      <li>
+                        {ingredient.quantity} {ingredient.name}
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
             <button
               type="button"
-              className="orange-btn"
               onClick={addIngredient}
-            ></button>
+              className={classes.obtn}
+            >
+              Add Ingredient
+            </button>
 
             <textarea
+              className={classes.textarea}
               name="instructions"
               placeholder="instructions"
               onChange={handleChange}
@@ -112,31 +174,9 @@ const NewRecipeScreen = () => {
               rows="10"
             ></textarea>
 
-            <label htmlFor="cook">Cook</label>
-            <input
-              onChange={typeChangeHandler}
-              type="radio"
-              name="style"
-              value='cook'
-            />
-
-            <label htmlFor="cook">bake</label>
-            <input
-              onChange={typeChangeHandler}
-              type="radio"
-              name="style"
-              value='bake'
-            />
-
-            <label htmlFor="cook">drink</label>
-            <input
-              onChange={typeChangeHandler}
-              type="radio"
-              name="style"
-              value='drink'
-            />
-
-            <button type="submit">Submit</button>
+            <button className={classes.bbtn} type="submit">
+              Submit
+            </button>
           </form>
         )}
       </Formik>
